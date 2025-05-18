@@ -1,6 +1,7 @@
 package com.adatech.IMDB.service;
 
 import com.adatech.IMDB.converter.FilmeConverter;
+import com.adatech.IMDB.exception.FilmeNaoEncontradoException;
 import com.adatech.IMDB.model.Filme;
 import com.adatech.IMDB.repository.FilmeRepository;
 import org.junit.jupiter.api.Assertions;
@@ -56,5 +57,25 @@ class FilmeServiceTest {
         //Valida se o nome do filme é igual o nome do filme obtivo do banco de dados
         Assertions.assertEquals("The Forge",filmeObtido.getTitle());
 
+    }
+
+    @Test
+    void deveLancarExcecaoQuandoFilmeNaoEncontrado(){
+        //Cenario
+
+        Long id = 2L;
+
+        //Mockito simula o comportamento da repository quando chamada e não retorna um filme que não esta salvo no banco de dados
+        Mockito.when(repository.findById(id)).thenReturn(Optional.empty());
+
+        //Execução
+        FilmeNaoEncontradoException exception = Assertions.assertThrows(FilmeNaoEncontradoException.class, () -> service.getById(id));
+
+        //Validação
+        //Valida se a exception não é nula
+        Assertions.assertNotNull(exception);
+
+        //Valida a mensagem é igual quando o filme não é encontrado
+        Assertions.assertEquals("Filme não encontrado com o ID: " + id, exception.getMessage());
     }
 }
