@@ -2,6 +2,7 @@ package com.adatech.IMDB.service;
 
 import com.adatech.IMDB.converter.FilmeConverter;
 import com.adatech.IMDB.exception.FilmeNaoEncontradoException;
+import com.adatech.IMDB.exception.ListaVaziaException;
 import com.adatech.IMDB.model.Filme;
 import com.adatech.IMDB.repository.FilmeRepository;
 import org.junit.jupiter.api.Assertions;
@@ -108,18 +109,42 @@ class FilmeServiceTest {
         filme5.setTitle("Overcomer");
         filme5.setYear("2019");
 
+        //Aqui você deixa explicito o que espera do Mockito, neste caso retornar uma lista filmes cadastrados
         Mockito.when(repository.findAll()).thenReturn(List.of(filme1,filme2,filme3,filme4,filme5));
 
         //Execução
         List<Filme> filmesObtidos = service.getForAll();
 
         //Validação
+        // Verifica se a lista não é nula
         Assertions.assertNotNull(filmesObtidos);
+
+        //Verifica a quantidade de filmes na lista
         Assertions.assertEquals(5,filmesObtidos.size());
+
+        //Verifica se o nome do filme é igual ao nome do filme obtido da lista
         Assertions.assertEquals("The Forge",filmesObtidos.get(0).getTitle());
         Assertions.assertEquals("Fireproof",filmesObtidos.get(1).getTitle());
         Assertions.assertEquals("Facing the Giants",filmesObtidos.get(2).getTitle());
         Assertions.assertEquals("War Room",filmesObtidos.get(3).getTitle());
         Assertions.assertEquals("Overcomer",filmesObtidos.get(4).getTitle());
     }
+
+    @Test
+    void deveLancarExcecaoQuandoListaDeFilmesEstaVazia(){
+        //Cenário
+        //Aqui você deixa explicito o que espera do Mockito, neste caso retornar uma lista vazia
+        Mockito.when(repository.findAll()).thenReturn(List.of());
+
+        //Execução
+        ListaVaziaException exception = Assertions.assertThrows(ListaVaziaException.class, () -> service.getForAll());
+
+        //Validação
+        Assertions.assertNotNull(exception);
+
+        //Valida a mensagem é igual quando nenhum filme é cadastrado na lista
+        Assertions.assertEquals("Nenhum filme cadastrado na lista.", exception.getMessage());
+
+    }
+
 }
