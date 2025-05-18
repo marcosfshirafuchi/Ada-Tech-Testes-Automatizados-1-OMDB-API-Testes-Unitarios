@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.util.List;
 import java.util.Optional;
 
 class FilmeServiceTest {
@@ -77,5 +78,48 @@ class FilmeServiceTest {
 
         //Valida a mensagem é igual quando o filme não é encontrado
         Assertions.assertEquals("Filme não encontrado com o ID: " + id, exception.getMessage());
+    }
+
+    @Test
+    void deveBuscarTodosOsFilmesComSucesso(){
+        //Cenario
+        Filme filme1 = new Filme();
+        filme1.setId(1L);
+        filme1.setTitle("The Forge");
+        filme1.setYear("2024");
+
+        Filme filme2 = new Filme();
+        filme2.setId(2L);
+        filme2.setTitle("Fireproof");
+        filme2.setYear("2008");
+
+        Filme filme3 = new Filme();
+        filme3.setId(3L);
+        filme3.setTitle("Facing the Giants");
+        filme3.setYear("2006");
+
+        Filme filme4 = new Filme();
+        filme4.setId(4L);
+        filme4.setTitle("War Room");
+        filme4.setYear("2015");
+
+        Filme filme5 = new Filme();
+        filme5.setId(5L);
+        filme5.setTitle("Overcomer");
+        filme5.setYear("2019");
+
+        Mockito.when(repository.findAll()).thenReturn(List.of(filme1,filme2,filme3,filme4,filme5));
+
+        //Execução
+        List<Filme> filmesObtidos = service.getForAll();
+
+        //Validação
+        Assertions.assertNotNull(filmesObtidos);
+        Assertions.assertEquals(5,filmesObtidos.size());
+        Assertions.assertEquals("The Forge",filmesObtidos.get(0).getTitle());
+        Assertions.assertEquals("Fireproof",filmesObtidos.get(1).getTitle());
+        Assertions.assertEquals("Facing the Giants",filmesObtidos.get(2).getTitle());
+        Assertions.assertEquals("War Room",filmesObtidos.get(3).getTitle());
+        Assertions.assertEquals("Overcomer",filmesObtidos.get(4).getTitle());
     }
 }
