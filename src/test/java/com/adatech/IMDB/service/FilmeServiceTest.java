@@ -180,4 +180,23 @@ class FilmeServiceTest {
         Assertions.assertEquals("1986", resultado.getYear());
         Assertions.assertEquals("113 min", resultado.getRuntime());
     }
+
+    @Test
+    void deveLancarFilmeNaoEncontradoExceptionQuandoOMDBRetornarFalse() {
+        //Cenario
+        String titulo = "FilmeInexistente";
+        FilmeOMDB filmeInvalido = new FilmeOMDB();
+        filmeInvalido.setResponse("False");
+
+        String urlEsperada = "http://mockapi.com?t=FilmeInexistente&apikey=158d281a";
+        Mockito.when(restTemplate.getForObject(urlEsperada, FilmeOMDB.class)).thenReturn(filmeInvalido);
+
+        //Execução
+        FilmeNaoEncontradoException exception = Assertions.assertThrows(FilmeNaoEncontradoException.class, () -> service.getInformacoesFilme(titulo));
+
+        //Validação
+        Assertions.assertNotNull(exception);
+        Assertions.assertEquals("Filme não encontrado na base do OMDB.", exception.getMessage());
+
+    }
 }
