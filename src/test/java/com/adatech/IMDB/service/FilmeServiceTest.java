@@ -8,7 +8,9 @@ import com.adatech.IMDB.repository.FilmeRepository;
 import com.adatech.IMDB.vo.FilmeOMDB;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.InOrder;
 import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
@@ -241,5 +243,33 @@ class FilmeServiceTest {
         Assertions.assertNotNull(exception);
         Assertions.assertEquals("Filme não encontrado na base do OMDB.", exception.getMessage());
 
+    }
+
+    @DisplayName("Deve encontrar o filme no banco de dados e excluí-lo")
+    @Test
+    void deveEncontrarFilmeNoBancoDeDadosEExcluiLo() {
+        // Cenário
+        Long id = 1L;
+        Filme filmeMock = new Filme();
+        filmeMock.setId(id);
+        filmeMock.setTitle("Exemplo de Filme");
+
+        // Mock do repositório para retornar o filme
+        Mockito.when(repository.findById(id)).thenReturn(Optional.of(filmeMock));
+
+        // Execução
+        service.delete(id);
+
+        // Verificações
+        // Verifica se o método findById foi chamado uma vez com o ID correto
+        Mockito.verify(repository, Mockito.times(1)).findById(id);
+
+        // Verifica se o método delete foi chamado uma vez com o filme encontrado
+        Mockito.verify(repository, Mockito.times(1)).delete(filmeMock);
+
+        // Verifica a ordem das chamadas: findById deve vir antes de delete
+        InOrder inOrder = Mockito.inOrder(repository);
+        inOrder.verify(repository).findById(id);
+        inOrder.verify(repository).delete(filmeMock);
     }
 }
