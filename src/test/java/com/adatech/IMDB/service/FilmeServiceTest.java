@@ -199,4 +199,30 @@ class FilmeServiceTest {
         Assertions.assertEquals("Filme não encontrado na base do OMDB.", exception.getMessage());
 
     }
+
+    @Test
+    void deveLancarIllegalArgumentExceptionQuandoTituloForNuloOuVazio() {
+        //Cenario
+        String titulo = null;
+        String titulo2 = "";
+        String titulo3 = " ";
+        Mockito.when(restTemplate.getForObject(titulo, FilmeOMDB.class)).thenReturn(null);
+        Mockito.when(restTemplate.getForObject(titulo2, FilmeOMDB.class)).thenReturn(null);
+        Mockito.when(restTemplate.getForObject(titulo3, FilmeOMDB.class)).thenReturn(null);
+
+        //Execução
+        IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () -> service.getInformacoesFilme(titulo));
+        IllegalArgumentException exception2 = Assertions.assertThrows(IllegalArgumentException.class, () -> service.getInformacoesFilme(titulo2));
+        IllegalArgumentException exception3 = Assertions.assertThrows(IllegalArgumentException.class, () -> service.getInformacoesFilme(titulo3));
+
+        //Validação
+
+        Assertions.assertNotNull(exception);
+        Assertions.assertNotNull(exception2);
+        Assertions.assertNotNull(exception3);
+        Assertions.assertEquals("O campo de busca está vazio! Preencha com um título de filme válido.", exception.getMessage());
+        Assertions.assertEquals("O campo de busca está vazio! Preencha com um título de filme válido.", exception2.getMessage());
+        Assertions.assertEquals("O campo de busca está vazio! Preencha com um título de filme válido.", exception3.getMessage());
+
+    }
 }
