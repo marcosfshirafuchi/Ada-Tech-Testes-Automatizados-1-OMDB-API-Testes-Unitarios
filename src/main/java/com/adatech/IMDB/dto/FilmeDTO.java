@@ -8,6 +8,10 @@ public class FilmeDTO {
     @NotBlank(message = "O título não pode ser nulo ou em branco.")
     private String title;
 
+    // Construtor vazio
+    public FilmeDTO() {
+    }
+
     // Construtor
     public FilmeDTO(String title) {
         this.title = title;

@@ -23,11 +23,17 @@ public class FilmeService {
     @Value("${url.apiFilmes}")
     private String urlApiFilmes;
 
+    private RestTemplate restTemplate;
+
     private final String PARAM_API_KEY = "&apikey=158d281a";
 
     public FilmeService(FilmeRepository filmeRepository, FilmeConverter filmeConverter) {
         this.filmeRepository = filmeRepository;
         this.filmeConverter = filmeConverter;
+    }
+
+    public void setRestTemplate(RestTemplate restTemplate) { // <-- setter necessário
+        this.restTemplate = restTemplate;
     }
 
     public FilmeOMDB getInformacoesFilme(String titulo) {

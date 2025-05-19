@@ -5,10 +5,13 @@ import com.adatech.IMDB.exception.FilmeNaoEncontradoException;
 import com.adatech.IMDB.exception.ListaVaziaException;
 import com.adatech.IMDB.model.Filme;
 import com.adatech.IMDB.repository.FilmeRepository;
+import com.adatech.IMDB.vo.FilmeOMDB;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,16 +21,22 @@ class FilmeServiceTest {
     private FilmeService service;
     private FilmeRepository repository;
     private FilmeConverter converter;
+    private RestTemplate restTemplate;
 
     @BeforeEach
     void setUp() {
         repository = Mockito.mock(FilmeRepository.class);
         converter = Mockito.mock(FilmeConverter.class);
-        service = new FilmeService(repository,converter);
+        service = new FilmeService(repository, converter);
+        restTemplate = Mockito.mock(RestTemplate.class);
+        // Injeta o mock do RestTemplate diretamente
+        ReflectionTestUtils.setField(service, "restTemplate", restTemplate);
+        // Injeta a URL fake da API para simular chamada
+        ReflectionTestUtils.setField(service, "urlApiFilmes", "http://www.omdbapi.com");
     }
 
     @Test
-    void deveRetornarUmFilmePorIdComSucesso(){
+    void deveRetornarUmFilmePorIdComSucesso() {
         //Cenario
         Long id = 1L;
 
@@ -54,15 +63,15 @@ class FilmeServiceTest {
         Assertions.assertNotNull(filmeObtido);
 
         //Valida se o Id é igual id do filmeObtido do banco de dados
-        Assertions.assertEquals(id,filmeObtido.getId());
+        Assertions.assertEquals(id, filmeObtido.getId());
 
         //Valida se o nome do filme é igual o nome do filme obtivo do banco de dados
-        Assertions.assertEquals("The Forge",filmeObtido.getTitle());
+        Assertions.assertEquals("The Forge", filmeObtido.getTitle());
 
     }
 
     @Test
-    void deveLancarExcecaoQuandoFilmeNaoEncontrado(){
+    void deveLancarExcecaoQuandoFilmeNaoEncontrado() {
         //Cenario
 
         Long id = 2L;
@@ -82,7 +91,7 @@ class FilmeServiceTest {
     }
 
     @Test
-    void deveBuscarTodosOsFilmesComSucesso(){
+    void deveBuscarTodosOsFilmesComSucesso() {
         //Cenario
         Filme filme1 = new Filme();
         filme1.setId(1L);
@@ -110,7 +119,7 @@ class FilmeServiceTest {
         filme5.setYear("2019");
 
         //Aqui você deixa explicito o que espera do Mockito, neste caso retornar uma lista filmes cadastrados
-        Mockito.when(repository.findAll()).thenReturn(List.of(filme1,filme2,filme3,filme4,filme5));
+        Mockito.when(repository.findAll()).thenReturn(List.of(filme1, filme2, filme3, filme4, filme5));
 
         //Execução
         List<Filme> filmesObtidos = service.getForAll();
@@ -120,18 +129,18 @@ class FilmeServiceTest {
         Assertions.assertNotNull(filmesObtidos);
 
         //Verifica a quantidade de filmes na lista
-        Assertions.assertEquals(5,filmesObtidos.size());
+        Assertions.assertEquals(5, filmesObtidos.size());
 
         //Verifica se o nome do filme é igual ao nome do filme obtido da lista
-        Assertions.assertEquals("The Forge",filmesObtidos.get(0).getTitle());
-        Assertions.assertEquals("Fireproof",filmesObtidos.get(1).getTitle());
-        Assertions.assertEquals("Facing the Giants",filmesObtidos.get(2).getTitle());
-        Assertions.assertEquals("War Room",filmesObtidos.get(3).getTitle());
-        Assertions.assertEquals("Overcomer",filmesObtidos.get(4).getTitle());
+        Assertions.assertEquals("The Forge", filmesObtidos.get(0).getTitle());
+        Assertions.assertEquals("Fireproof", filmesObtidos.get(1).getTitle());
+        Assertions.assertEquals("Facing the Giants", filmesObtidos.get(2).getTitle());
+        Assertions.assertEquals("War Room", filmesObtidos.get(3).getTitle());
+        Assertions.assertEquals("Overcomer", filmesObtidos.get(4).getTitle());
     }
 
     @Test
-    void deveLancarExcecaoQuandoListaDeFilmesEstaVazia(){
+    void deveLancarExcecaoQuandoListaDeFilmesEstaVazia() {
         //Cenário
         //Aqui você deixa explicito o que espera do Mockito, neste caso retornar uma lista vazia
         Mockito.when(repository.findAll()).thenReturn(List.of());
@@ -147,4 +156,28 @@ class FilmeServiceTest {
 
     }
 
+    @Test
+    void deveRetornarInformacoesDoFilmeQuandoTituloValido() {
+        //Cenario
+        String titulo = "The Karate Kid Part II";
+        FilmeOMDB filmeNaAPIDoOMDB = new FilmeOMDB();
+        filmeNaAPIDoOMDB.setTitle(titulo);
+        filmeNaAPIDoOMDB.setYear("1986");
+        filmeNaAPIDoOMDB.setRuntime("113 min");
+        filmeNaAPIDoOMDB.setResponse("True");
+
+        String urlEsperada = "http://www.omdbapi.com?t=" + titulo + "&apikey=158d281a";
+
+        // Define o comportamento esperado do mock do RestTemplate
+        Mockito.when(restTemplate.getForObject(urlEsperada, FilmeOMDB.class)).thenReturn(filmeNaAPIDoOMDB);
+
+        // Execução
+        FilmeOMDB resultado = service.getInformacoesFilme(titulo);
+
+        // Validação
+        Assertions.assertNotNull(resultado);
+        Assertions.assertEquals(titulo, resultado.getTitle());
+        Assertions.assertEquals("1986", resultado.getYear());
+        Assertions.assertEquals("113 min", resultado.getRuntime());
+    }
 }
