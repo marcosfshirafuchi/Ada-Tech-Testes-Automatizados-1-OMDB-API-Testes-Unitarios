@@ -272,4 +272,23 @@ class FilmeServiceTest {
         inOrder.verify(repository).findById(id);
         inOrder.verify(repository).delete(filmeMock);
     }
+
+    @Test
+    void deveLancarUmaExcecaoAoNaoEncontrarUmFilmeNoBancoDeDados(){
+        //Cenario
+        Long id = 1L;
+        //Aqui você deixa explicito o que espera do Mockito, neste caso quando o método findById da classe repository deve retonar uma exceção de filme não encontrado pelo Id
+        Mockito.when(repository.findById(id)).thenThrow(new FilmeNaoEncontradoException("Filme não encontrado com o ID: " + id));
+
+        //Execução
+        //Vai dar exceção quando chamar o método delete da classe service
+        FilmeNaoEncontradoException exception = Assertions.assertThrows(FilmeNaoEncontradoException.class,() -> service.delete(id));
+
+        //Verificação
+
+        //Valida se a exception não é nula
+        Assertions.assertNotNull(exception);
+        //Valida a mensagem é igual quando o filme não é encontrado
+        Assertions.assertEquals("Filme não encontrado com o ID: " + id, exception.getMessage());
+    }
 }
