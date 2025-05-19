@@ -225,4 +225,21 @@ class FilmeServiceTest {
         Assertions.assertEquals("O campo de busca está vazio! Preencha com um título de filme válido.", exception3.getMessage());
 
     }
+
+    @Test
+    void deveLancarFilmeNaoEncontradoExceptionQuandoOMDBRetornarNull() {
+        //Cenário
+        String titulo = "Invalido";
+        String urlEsperada = "http://mockapi.com?t=Invalido&apikey=158d281a";
+
+        Mockito.when(restTemplate.getForObject(urlEsperada, FilmeOMDB.class)).thenReturn(null);
+
+        //Execução
+        FilmeNaoEncontradoException exception =  Assertions.assertThrows(FilmeNaoEncontradoException.class, () -> service.getInformacoesFilme(titulo));
+
+        //Validação
+        Assertions.assertNotNull(exception);
+        Assertions.assertEquals("Filme não encontrado na base do OMDB.", exception.getMessage());
+
+    }
 }
