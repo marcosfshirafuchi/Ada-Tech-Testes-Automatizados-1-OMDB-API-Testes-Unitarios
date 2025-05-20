@@ -238,7 +238,7 @@ class FilmeServiceTest {
         Mockito.when(restTemplate.getForObject(urlEsperada, FilmeOMDB.class)).thenReturn(null);
 
         //Execução
-        FilmeNaoEncontradoException exception =  Assertions.assertThrows(FilmeNaoEncontradoException.class, () -> service.getInformacoesFilme(titulo));
+        FilmeNaoEncontradoException exception = Assertions.assertThrows(FilmeNaoEncontradoException.class, () -> service.getInformacoesFilme(titulo));
 
         //Validação
         Assertions.assertNotNull(exception);
@@ -275,7 +275,7 @@ class FilmeServiceTest {
     }
 
     @Test
-    void deveLancarUmaExcecaoAoNaoEncontrarUmFilmeNoBancoDeDados(){
+    void deveLancarUmaExcecaoAoNaoEncontrarUmFilmeNoBancoDeDados() {
         //Cenario
         Long id = 1L;
         //Aqui você deixa explicito o que espera do Mockito, neste caso quando o método findById da classe repository deve retonar uma exceção de filme não encontrado pelo Id
@@ -283,7 +283,7 @@ class FilmeServiceTest {
 
         //Execução
         //Vai dar exceção quando chamar o método delete da classe service
-        FilmeNaoEncontradoException exception = Assertions.assertThrows(FilmeNaoEncontradoException.class,() -> service.delete(id));
+        FilmeNaoEncontradoException exception = Assertions.assertThrows(FilmeNaoEncontradoException.class, () -> service.delete(id));
 
         //Verificação
 
@@ -295,7 +295,7 @@ class FilmeServiceTest {
 
     @DisplayName("Dado um filme válido da api OMDB, deve criar esse filme com sucesso")
     @Test
-    void testeCriarFilmeValidoComSucesso(){
+    void testeCriarFilmeValidoComSucesso() {
         //Cenário
         FilmeDTO filmeDTO = new FilmeDTO();
         filmeDTO.setTitle("Flashdance");
@@ -328,5 +328,39 @@ class FilmeServiceTest {
 
         //Verifica se o método save foi chamado uma vez com o filme
         Mockito.verify(repository, Mockito.times(1)).save(filme);
+    }
+
+    @Test
+    void deveLancarExcecaoQuandoTituloForNuloOuVazio() {
+
+        //Cenario
+        String tituloNulo = null;
+        String tituloVazio = "";
+        String tituloComEspacosEmBranco = "   ";
+
+        //Execução
+        // Título nulo
+        IllegalArgumentException exception1 = Assertions.assertThrows(IllegalArgumentException.class,
+                () -> service.save(new FilmeDTO(tituloNulo)));
+
+        // Título vazio
+        IllegalArgumentException exception2 = Assertions.assertThrows(IllegalArgumentException.class,
+                () -> service.save(new FilmeDTO(tituloVazio)));
+
+        // Título com apenas espaços em branco
+        IllegalArgumentException exception3 = Assertions.assertThrows(IllegalArgumentException.class,
+                () -> service.save(new FilmeDTO(tituloComEspacosEmBranco)));
+
+        //Validação
+
+        //Verifica se as exceções não são nulas
+        Assertions.assertNotNull(exception1);
+        Assertions.assertNotNull(exception2);
+        Assertions.assertNotNull(exception3);
+
+        //Verifica se as mensagens das exceções são iguais
+        Assertions.assertEquals("O título do filme não pode ser nulo ou vazio", exception1.getMessage());
+        Assertions.assertEquals("O título do filme não pode ser nulo ou vazio", exception2.getMessage());
+        Assertions.assertEquals("O título do filme não pode ser nulo ou vazio", exception3.getMessage());
     }
 }

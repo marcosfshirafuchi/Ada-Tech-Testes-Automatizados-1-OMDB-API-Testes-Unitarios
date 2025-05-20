@@ -32,10 +32,6 @@ public class FilmeService {
         this.filmeConverter = filmeConverter;
     }
 
-    public void setRestTemplate(RestTemplate restTemplate) { // <-- setter necessário
-        this.restTemplate = restTemplate;
-    }
-
     public FilmeOMDB getInformacoesFilme(String titulo) {
         if (titulo == null || titulo.trim().isEmpty()) {
             throw new IllegalArgumentException("O campo de busca está vazio! Preencha com um título de filme válido.");
