@@ -1,6 +1,7 @@
 package com.adatech.IMDB.service;
 
 import com.adatech.IMDB.converter.FilmeConverter;
+import com.adatech.IMDB.dto.FilmeDTO;
 import com.adatech.IMDB.exception.FilmeNaoEncontradoException;
 import com.adatech.IMDB.exception.ListaVaziaException;
 import com.adatech.IMDB.model.Filme;
@@ -290,5 +291,42 @@ class FilmeServiceTest {
         Assertions.assertNotNull(exception);
         //Valida a mensagem é igual quando o filme não é encontrado
         Assertions.assertEquals("Filme não encontrado com o ID: " + id, exception.getMessage());
+    }
+
+    @DisplayName("Dado um filme válido da api OMDB, deve criar esse filme com sucesso")
+    @Test
+    void testeCriarFilmeValidoComSucesso(){
+        //Cenário
+        FilmeDTO filmeDTO = new FilmeDTO();
+        filmeDTO.setTitle("Flashdance");
+
+        //Converte filmeDTO para FilmeOMDB através do métodp getInformacoesFilme e depois para filme através do método converteOMDBParaFilme
+        Filme filme = converter.converteOMDBParaFilme(service.getInformacoesFilme(filmeDTO.getTitle()));
+
+        //Cria um filme salvo no Banco De Dados
+        Filme filmeSalvoNoBancoDeDados = new Filme();
+        filmeSalvoNoBancoDeDados.setId(1L);
+        filmeSalvoNoBancoDeDados.setTitle("Flashdance");
+
+        //Mockito simula o comportamento da repository quando chamada e retorna um filme salvo no banco de dados
+        Mockito.when(repository.save(filme)).thenReturn(filmeSalvoNoBancoDeDados);
+
+        //Execução
+        //Um filme criado busca o filme salvo do banco de dados através do método save da classe service
+        Filme filmeCriado = service.save(filmeDTO);
+
+        //Validação
+
+        //Verifica se o filmeCriado não é nulo
+        Assertions.assertNotNull(filmeCriado);
+
+        //Verifica se o filme Flashdance é igual titulo do filmeCriado
+        Assertions.assertEquals("Flashdance", filmeCriado.getTitle());
+
+        //Verifica se o id do filmeCriado é igual 1
+        Assertions.assertEquals(1L, filmeCriado.getId());
+
+        //Verifica se o método save foi chamado uma vez com o filme
+        Mockito.verify(repository, Mockito.times(1)).save(filme);
     }
 }
