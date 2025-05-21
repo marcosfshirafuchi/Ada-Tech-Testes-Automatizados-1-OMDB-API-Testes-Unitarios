@@ -131,6 +131,37 @@ class FilmeControllerTest {
 
     }
 
+    @Test
+    void deveBuscarUmFilmeCadastradoNoBancoDeDadosPeloIdComSucesso() throws Exception {
+        //Cenário
+        Long id = 1L;
+
+        //Criação de filme para ser retornado pelo id válido
+        Filme filme = new Filme();
+        filme.setId(id);
+        filme.setTitle("Mission: Impossible - The Final Reckoning");
+        filme.setYear("2025");
+
+        // Define o comportamento esperado do mock, quando envia um id válido para o método getById da service, ele retorna o filme criado acima
+        Mockito.when(service.getById(id)).thenReturn(filme);
+
+        //Criação de um filme cadastrado para ser retornado pelo id válido
+        FilmeVO retornaFilmeCadastradoPeloId = new FilmeVO();
+        retornaFilmeCadastradoPeloId.setId(filme.getId());
+        retornaFilmeCadastradoPeloId.setTitle(filme.getTitle());
+
+        // Define o comportamento esperado do mock, quando envia o filme da classe Filme para o método converteParaFilmeVO e retornar um filme já cadastrado no banco de dados
+        Mockito.when(converter.converteParaFilmeVO(filme)).thenReturn(retornaFilmeCadastradoPeloId);
+
+        //Execução E Validação
+        mockMvc.perform(MockMvcRequestBuilders.get("/filme/{id}", id)
+                        .param("id", String.valueOf(id))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json(asJsonString(retornaFilmeCadastradoPeloId)))
+                .andDo(MockMvcResultHandlers.print());
+    }
+
 
     private String asJsonString(Object object) {
         ObjectMapper objectMapper = new ObjectMapper();
