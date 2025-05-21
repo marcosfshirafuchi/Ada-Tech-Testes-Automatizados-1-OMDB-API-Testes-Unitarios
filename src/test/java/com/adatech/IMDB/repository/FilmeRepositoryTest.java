@@ -1,11 +1,13 @@
 package com.adatech.IMDB.repository;
 
+import com.adatech.IMDB.dto.FilmeDTO;
 import com.adatech.IMDB.model.Filme;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.Optional;
 
@@ -14,10 +16,11 @@ class FilmeRepositoryTest {
     @Autowired
     FilmeRepository filmeRepository;
     Filme filme;
+    FilmeDTO filmeDTO;
     @BeforeEach
     void setUp(){
         filme = new Filme();
-
+        filmeDTO = new FilmeDTO();
     }
 
     @Test
@@ -41,5 +44,18 @@ class FilmeRepositoryTest {
         Assertions.assertTrue(filmeOptional.isPresent());
         Assertions.assertEquals(filmeSalvo.getTitle(), filmeOptional.get().getTitle());
         Assertions.assertEquals(filmeSalvo.getYear(), filmeOptional.get().getYear());
+    }
+
+    @Test
+    void deveLancarExcecaoQuandoConstraintForViolada(){
+        //Cenário
+        filme.setTitle(null);
+
+        //Execução
+        DataIntegrityViolationException exception = Assertions.assertThrows(
+                DataIntegrityViolationException.class, () -> filmeRepository.save(filme));
+
+        //Validação
+        Assertions.assertNotNull(exception);
     }
 }

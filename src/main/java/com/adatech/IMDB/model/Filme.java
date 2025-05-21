@@ -7,7 +7,8 @@ public class Filme {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column (name = "titulo")
+
+    @Column (name = "titulo", nullable = false)
     private String title;
     @Column (name = "enredo")
     private String plot;
