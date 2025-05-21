@@ -40,7 +40,7 @@ class FilmeControllerTest {
     MockMvc mockMvc;
 
     @BeforeEach
-    public void setUp(){
+    public void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
     }
 
@@ -162,6 +162,18 @@ class FilmeControllerTest {
                 .andDo(MockMvcResultHandlers.print());
     }
 
+    @Test
+    void deveApagarUmFilmeCadastradoDoBancoDeDadosPorIdComSucesso() throws Exception {
+        //Cenário
+        Long id = 1L;
+
+        //Execução e Validação
+        mockMvc.perform(MockMvcRequestBuilders.delete("/filme/{id}", id)
+                        .param("id", String.valueOf(id))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isNoContent())
+                .andDo(MockMvcResultHandlers.print());
+    }
 
     private String asJsonString(Object object) {
         ObjectMapper objectMapper = new ObjectMapper();
