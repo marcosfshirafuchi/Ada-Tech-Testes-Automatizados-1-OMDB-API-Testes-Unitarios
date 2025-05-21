@@ -1,6 +1,7 @@
 package com.adatech.IMDB.controller;
 
 import com.adatech.IMDB.converter.FilmeConverter;
+import com.adatech.IMDB.dto.FilmeDTO;
 import com.adatech.IMDB.model.Filme;
 import com.adatech.IMDB.service.FilmeService;
 import com.adatech.IMDB.vo.FilmeVO;
@@ -12,6 +13,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.hateoas.Link;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -20,6 +23,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
+
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 class FilmeControllerTest {
@@ -76,6 +81,37 @@ class FilmeControllerTest {
                 .andExpect(MockMvcResultMatchers.content().json(asJsonString(filmesVO)))
                 .andDo(MockMvcResultHandlers.print());
     }
+
+    @Test
+    void deveCadastrarUmFilmeValidoComSucessoNoBancoDeDados() throws Exception {
+        // CENÁRIO
+        FilmeDTO request = new FilmeDTO();
+        request.setTitle("Mission: Impossible - The Final Reckoning");
+
+        Filme filme = new Filme();
+        filme.setId(1L);
+        filme.setTitle("Mission: Impossible - The Final Reckoning");
+        filme.setYear("2025");
+
+        FilmeVO filmeCriado = new FilmeVO();
+        filmeCriado.setId(1L);
+        filmeCriado.setTitle("Mission: Impossible - The Final Reckoning");
+        filmeCriado.setYear("2025");
+        filmeCriado.add(Link.of("/filme/1")); // HATEOAS fictício
+
+        // MOCKS
+        Mockito.when(service.save(Mockito.any())).thenReturn(filme);
+        Mockito.when(converter.converteParaFilmeVO(Mockito.any())).thenReturn(filmeCriado);
+
+        // EXECUÇÃO & VALIDAÇÃO
+        mockMvc.perform(MockMvcRequestBuilders.post("/filme")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(request)))
+                .andExpect(status().isCreated())
+                .andExpect(MockMvcResultMatchers.content().json(asJsonString(filmeCriado)))
+                .andDo(MockMvcResultHandlers.print());
+    }
+
 
     private String asJsonString(Object object) {
         ObjectMapper objectMapper = new ObjectMapper();
