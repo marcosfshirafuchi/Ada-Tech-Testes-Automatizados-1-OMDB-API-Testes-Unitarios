@@ -4,6 +4,7 @@ import com.adatech.IMDB.converter.FilmeConverter;
 import com.adatech.IMDB.dto.FilmeDTO;
 import com.adatech.IMDB.model.Filme;
 import com.adatech.IMDB.service.FilmeService;
+import com.adatech.IMDB.vo.FilmeOMDB;
 import com.adatech.IMDB.vo.FilmeVO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.hateoas.Link;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -110,6 +110,25 @@ class FilmeControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(MockMvcResultMatchers.content().json(asJsonString(filmeCriado)))
                 .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    void deveRetornarUmFilmeValidoDaApiDoOMDBComSucesso() throws Exception {
+        // CENÁRIO
+        String titulo = "Mission: Impossible - The Final Reckoning";
+        FilmeOMDB filmeValidoDaAPIDoOMB = new FilmeOMDB();
+        filmeValidoDaAPIDoOMB.setTitle(titulo);
+        filmeValidoDaAPIDoOMB.setYear("2025");
+        Mockito.when(service.getInformacoesFilme(titulo)).thenReturn(filmeValidoDaAPIDoOMB);
+
+        // Execução e Validação
+        mockMvc.perform(MockMvcRequestBuilders.get("/filme")
+                        .param("titulo", titulo)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json(asJsonString(filmeValidoDaAPIDoOMB)))
+                .andDo(MockMvcResultHandlers.print());
+
     }
 
 
