@@ -23,6 +23,20 @@ public class Filme {
     @Column (name = "duração")
     private String runtime;
 
+    //CONSTRUTORES
+
+    public Filme() {
+    }
+
+    public Filme(String title, String plot, String actors, String genre, String year, String runtime) {
+        this.title = title;
+        this.plot = plot;
+        this.actors = actors;
+        this.genre = genre;
+        this.year = year;
+        this.runtime = runtime;
+    }
+
     //GET E SET
 
     public Long getId() {
