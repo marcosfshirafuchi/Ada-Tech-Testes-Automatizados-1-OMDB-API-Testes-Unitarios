@@ -2,16 +2,39 @@
   <img src="https://i.ibb.co/wNCRx9z/image-2025-01-04-T23-13-02-901-Z.png" alt="Desenvolva+" width="200"/>
 </p>
 
-# 🎬 Desenvolva+: API REST com Java e OMDb
+# 🎬 Desenvolva+: API REST com Java e OMDb - Teste Unitários
 
-Aplicação desenvolvida como projeto final da Formação **Ada Tech - Programação Web 2**, com foco em consumir dados reais de filmes via **OMDb API**, persistindo e manipulando informações em uma API REST robusta construída com **Java 21 e Spring Boot**.
+
+# 📌 Desafio: Melhorando a qualidade de nossos projetos.
+
+## 📍 Contexto
+
+Temos a nossa aplicação com uma API Rest pública para nossos clientes. Mas, agora, precisamos melhorar a qualidade, precisamos garantir que nossas entregas sejam feitas sem bugs.
+
+Temos o objetivo de criar vários testes para garantir que seja entregue um produto com qualidade ao nosso cliente. Lembre-se que precisamos respeitar a pirâmide de testes. 
+
+Caso você não tenha uma aplicação sua, pode utilizar essa aqui https://github.com/facincani/estoque como base.
+---
+
+## 🎯 Requisitos
+
+Construir testes para as classes do sistema (service, repository e controller) e garantir uma cobertura de teste de 50%. Usando a cobertura do IntelliJ como base.
+
+### ✅ Testes das camadas
+- Lembre-se de utilizar os testes corretos conforme a camada que esteja sendo validada.
+
+
+## 🛠 Tecnologias e Conceitos Esperados
+
+Para resolver esse desafio, recomenda-se o uso dos seguintes recursos:
+
+📌 Spring Boot (start web e starter test), JUnit.
+
 
 ---
 
 ## 👨‍💻 Desenvolvido por
 
-- [Anderson Alves Santos](https://github.com/santos-anderson)
-- [Janaína Cruz](https://github.com/JanaCruzS)
 - [Marcos Shirafuchi](https://github.com/marcosfshirafuchi)
 
 ---
@@ -51,6 +74,7 @@ A [**OMDb API (Open Movie Database)**](https://www.omdbapi.com/) é uma API REST
 | ![Postman](https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postman/postman-original-wordmark.svg) | **Postman 11.40.4**: testamos todos os endpoints por aqui |
 | ![H2](https://cdn.jsdelivr.net/gh/devicons/devicon/icons/azuresqldatabase/azuresqldatabase-original.svg) | **H2 Database**: banco de dados em memória |
 | Swagger UI | Documentação interativa para testar e visualizar a API |
+| <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/junit/junit-plain-wordmark.svg" />|**JUnit5**: é o framework que realiza os teste unitários das classes: FilmeService, FilmeRepository e FilmeController|
 
 ---
 
