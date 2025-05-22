@@ -3,22 +3,25 @@ package com.adatech.IMDB;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
- * <h1> Desenvolva + | #1322 - Projeto de Programação Web 2:</h1><br>
+ * <h1> Desenvolva + | #1322 - Projeto de Testes Automatizados 1</h1><br>
  * <b>Ada Tech - API REST : IMDB<br><br></b>
  * Descrição Geral<br><br>
- * Evoluir o projeto do último módulo para uma API REST em Spring Boot com os seguintes itens:<br><br>
- * - Persistência em banco de dados (H2 ou Postgres);<br>
- * - Consumo de uma API externa pública; (opcional);<br>
- * - Autenticação Básica (opcional);<br>
- * - Swagger (opcional);<br>
- * - Frontend (opcional);<br><br>
- * Entregaveis<br><br>
- * - O projeto pode ser feito opcionalmente em grupos de 3 até 5 pessoas;<br>
- * - O projeto deverá ser entregue no github ou zipado no LMS;<br>
- * - Documentação no REAMDE.md, com os diagramas das classes principais e guia de uso;<br>
- * - Realizar uma apresentação com os pontos mais desafiadores do projeto, os perrengues passados e um resumo do que foi entregue e o que não pode ser entregue;<br>
- * Entrega.<br><br>
- * Entregar o link do repositório do projeto no GitHub.<br>
+ * 📌 Desafio: Melhorando a qualidade de nossos projetos.<br><br>
+ * 📍 Contexto<br>
+ * Temos a nossa aplicação com uma API Rest pública para nossos clientes. Mas, agora, precisamos melhorar a qualidade, precisamos garantir que nossas entregas sejam feitas sem bugs.<br><br>
+ *
+ * Temos o objetivo de criar vários testes para garantir que seja entregue um produto com qualidade ao nosso cliente. Lembre-se que precisamos respeitar a pirâmide de testes.<br><br>
+ *
+ * Caso você não tenha uma aplicação sua, pode utilizar essa aqui https://github.com/facincani/estoque como base.<br><br>
+ * 🎯 Requisitos<br>
+ * Construir testes para as classes do sistema (service, repository e controller) e garantir uma cobertura de teste de 50%. Usando a cobertura do IntelliJ como base.<br><br>
+ *
+ * ✅ Testes das camadas<br>
+ * Lembre-se de utilizar os testes corretos conforme a camada que esteja sendo validada.<br><br>
+ * 🛠 Tecnologias e Conceitos Esperados<br>
+ * Para resolver esse desafio, recomenda-se o uso dos seguintes recursos:<br><br>
+ *
+ * 📌 Spring Boot (start web e starter test), JUnit.<br>
  * <p>
  * <b>Note:</b> Desenvolvido na linguagem Java.
  *
