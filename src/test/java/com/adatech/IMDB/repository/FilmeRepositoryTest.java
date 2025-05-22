@@ -75,4 +75,17 @@ class FilmeRepositoryTest {
         Assertions.assertNotNull(filmes);
         Assertions.assertEquals(7, filmes.size());
     }
+
+    @Test
+    void deveDeletarUmFilmeComSucesso(){
+        //Cenário
+        Filme filmeSalvo = filmeRepository.save(new Filme("Dirty Dancing", "Spending the summer at a Catskills resort with her family, Frances Baby Houseman falls in love with the camp's dance instructor, Johnny Castle.", "Patrick Swayze, Jennifer Grey, Jerry Orbach", "Drama, Music, Romance", "1987", "100 min"));
+
+        //Execução
+        filmeRepository.deleteById(filmeSalvo.getId());
+
+        //Validação
+        Optional<Filme> usuarioRetornado = filmeRepository.findById(filmeSalvo.getId());
+        Assertions.assertTrue(usuarioRetornado.isEmpty());
+    }
 }
