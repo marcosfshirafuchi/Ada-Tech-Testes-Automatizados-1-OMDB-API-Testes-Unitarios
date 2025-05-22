@@ -88,4 +88,19 @@ class FilmeRepositoryTest {
         Optional<Filme> usuarioRetornado = filmeRepository.findById(filmeSalvo.getId());
         Assertions.assertTrue(usuarioRetornado.isEmpty());
     }
+
+    @Test
+    void deveBuscarUmFilmePorIdComSucesso(){
+        // Cenário
+        Filme filme = new Filme("The Forge", "After graduating from high school without any plans for the future, Isaiah receives a push to start making better life decisions.", "Cameron Arnett, Priscilla C. Shirer, Aspen Kennedy", "Drama, Family", "2024", "124 min");
+        Filme filmeSalvo = filmeRepository.save(filme);
+
+        // Execução
+        Optional<Filme> filmeOptional = filmeRepository.findById(filmeSalvo.getId());
+
+        // Validação
+        Assertions.assertTrue(filmeOptional.isPresent());
+        Assertions.assertEquals(filmeSalvo.getId(), filmeOptional.get().getId());
+        Assertions.assertEquals(filmeSalvo.getTitle(), filmeOptional.get().getTitle());
+    }
 }
